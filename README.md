@@ -67,6 +67,20 @@ Note that there are *countless* ways to print out `"Hello World!"` in a Brainfuc
 
 Brainfuck interpreters in each scripting language is placed in a folder of its own complete with test cases to prove that it works.
 
+### PHP
+
+- Folder: `php`
+- File containing interpreter: `function.brainfuck.php`
+- Full suite of test cases (powered by [PHPTester](https://github.com/DonaldKellett/PHPTester)): `test_cases.php`
+
+#### The Interpreter
+
+```php
+string brainfuck(string $code[, string $input = ""])
+```
+
+The function receives 1 required and 1 optional argument, the first (required) argument being the Brainfuck program passed in as a string.  Comments (i.e. characters other than the 8 command characters) are supported.  The second (optional) argument is the list of bytes of data (in the form of a **string** *not* an array) passed into the Brainfuck program if the program contains the `,` character.  For example, if your program contains two `,`s in total and your `$input` string is `"BF"`, then the value of the character `"B"` will be passed into the program upon the first `,` followed by the character value of `"F"` upon the second `,`.  The interpreter is *not* guaranteed to behave properly **if** the number of requests for user input `,` exceeds the number of bytes (characters) in the `$input` string provided.
+
 ## Credits
 
 1. [Learn X in Y minutes (where X = brainfuck)](https://learnxinyminutes.com/docs/brainfuck/)
