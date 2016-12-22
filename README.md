@@ -75,6 +75,8 @@ Brainfuck interpreters in each scripting language is placed in a folder of its o
 
 #### The Interpreter
 
+*NOTE: The interpreter function in PHP requires PHP 7+ as it uses PHP 7 syntax features such as type declarations and return type declarations.  In order to adapt the interpreter for PHP 5+ (or older), simply remove the type declarations and return type declarations in the first line of the interpreter function and the code should work properly for older versions of PHP.*
+
 ```php
 string brainfuck(string $code[, string $input = ""])
 ```
