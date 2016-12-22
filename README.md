@@ -61,7 +61,7 @@ Below is a simple example of a Brainfuck program that prints out the string `"He
 <<<+. Print "!"
 ```
 
-Note that there are *countless* ways to print out `"Hello World"` in a Brainfuck program.  The example shown above is fairly optimised in that it makes use of a simple `while` loop to simplify some of the calculations but there are probably shorter Brainfuck programs out there that does the same job.
+Note that there are *countless* ways to print out `"Hello World!"` in a Brainfuck program.  The example shown above is fairly optimised in that it makes use of a simple `while` loop to simplify some of the calculations but there are probably shorter Brainfuck programs out there that does the same job.
 
 ## Interpreters
 
