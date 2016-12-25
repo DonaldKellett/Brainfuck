@@ -1,5 +1,7 @@
 # Brainfuck
 
+[![Join the chat at https://gitter.im/Brainfuck-Interpreter/Lobby](https://badges.gitter.im/Brainfuck-Interpreter/Lobby.svg)](https://gitter.im/Brainfuck-Interpreter/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 My implementations of the Brainfuck Interpreter in a number of Turing-complete scripting languages.  Complete with comments throughout the code to explain what is happening in the interpreter.  Guaranteed to work properly for all *valid* Brainfuck programs, with or without comments.  **MIT Licensed**
 
 ## Brainfuck - The Language
