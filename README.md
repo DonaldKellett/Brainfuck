@@ -85,7 +85,7 @@ Brainfuck interpreters in each scripting language is placed in a folder of its o
 string brainfuck(string $code[, string $input = ""])
 ```
 
-The function receives 1 required and 1 optional argument, the first (required) argument being the Brainfuck program passed in as a string.  Comments (i.e. characters other than the 8 command characters) are supported.  The second (optional) argument is the list of bytes of data (in the form of a **string** *not* an array) passed into the Brainfuck program if the program contains the `,` character.  For example, if your program contains two `,`s in total and your `$input` string is `"BF"`, then the value of the character `"B"` will be passed into the program upon the first `,` followed by the character value of `"F"` upon the second `,`.  The interpreter is *not* guaranteed to behave properly **if** the number of requests for user input `,` exceeds the number of bytes (characters) in the `$input` string provided.
+The function receives 1 required and 1 optional argument, the first (required) argument being the Brainfuck program passed in as a string.  Comments (i.e. characters other than the 8 command characters) are supported.  The second (optional) argument is the list of bytes of data (in the form of a **string** *not* an array) passed into the Brainfuck program if the program contains the `,` character.  For example, if your program contains two `,`s in total and your `$input` string is `"BF"`, then the value of the character `"B"` will be passed into the program upon the first `,` followed by the character value of `"F"` upon the second `,`.  The interpreter stores a value of `0` at the cell under the pointer when EOF is reached.
 
 ### JavaScript
 
@@ -99,7 +99,7 @@ The function receives 1 required and 1 optional argument, the first (required) a
 var stringOutput = brainfuck(code[, input = ""]);
 ```
 
-The interpreter accepts 1 required argument and 1 optional argument.  The first (required) argument is the Brainfuck program passed in as a string.  Comments (i.e. characters other than the 8 command characters in Brainfuck) are supported.  The second (optional) argument is the list of bytes of character data passed into the Brainfuck program if the program requires user input (i.e. `,`) **in the form of a string** *not* an array.  For example, if the Brainfuck program contains two `,`s and the `input` string is `"BF"` then `"B"` will be passed in for the first `,` and `"F"` for the next `,`.  Note that the interpreter is not guaranteed to function properly **if** the number of requests for use input (`,`) exceeds the number of characters in the `input` string.  The return value of the interpreter is *always* a string even if only digits are printed out.
+The interpreter accepts 1 required argument and 1 optional argument.  The first (required) argument is the Brainfuck program passed in as a string.  Comments (i.e. characters other than the 8 command characters in Brainfuck) are supported.  The second (optional) argument is the list of bytes of character data passed into the Brainfuck program if the program requires user input (i.e. `,`) **in the form of a string** *not* an array.  For example, if the Brainfuck program contains two `,`s and the `input` string is `"BF"` then `"B"` will be passed in for the first `,` and `"F"` for the next `,`.  When EOF is reached, the interpreter simply stores a value of `0` at the cell under the pointer.  The return value of the interpreter is *always* a string even if only digits are printed out.
 
 ## Credits
 
