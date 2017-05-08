@@ -61,6 +61,13 @@ $test->describe("The Brainfuck Interpreter", function () use ($test) {
     $test->assert_equals(ord(brainfuck(",>,<[>[->+>+<<]>>[-<<+>>]<<<-]>>.", chr(13) . chr(12))), 156);
     $test->assert_equals(ord(brainfuck(",>,<[>[->+>+<<]>>[-<<+>>]<<<-]>>.", chr(15) . chr(15))), 225);
   });
+  $test->it("should input 0 at the cell under the pointer when EOF is reached", function () use ($test) {
+    $test->assert_equals(brainfuck(",[.,]", "Codewars"), "Codewars");
+    $test->assert_equals(brainfuck(",[.,]", "@donaldsebleung"), "@donaldsebleung");
+    $test->assert_equals(brainfuck(",[.,]", "brainfuck"), "brainfuck");
+    $test->assert_equals(brainfuck(",[.,]", "BF"), "BF");
+    $test->assert_equals(brainfuck(",[.,]", "PHPTester"), "PHPTester");
+  });
   $test->it("should work for slightly more complicated Brainfuck programs", function () use ($test) {
     $test->assert_equals(brainfuck("++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+."), "Hello World!");
     $test->assert_equals(brainfuck(",>+>>>>++++++++++++++++++++++++++++++++++++++++++++>++++++++++++++++++++++++++++++++<<<<<<[>[>>>>>>+>+<<<<<<<-]>>>>>>>[<<<<<<<+>>>>>>>-]<[>++++++++++[-<-[>>+>+<<<-]>>>[<<<+>>>-]+<[>[-]<[-]]>[<<[>>>+<<<-]>>[-]]<<]>>>[>>+>+<<<-]>>>[<<<+>>>-]+<[>[-]<[-]]>[<<+>>[-]]<<<<<<<]>>>>>[++++++++++++++++++++++++++++++++++++++++++++++++.[-]]++++++++++<[->-<]>++++++++++++++++++++++++++++++++++++++++++++++++.[-]<<<<<<<<<<<<[>>>+>+<<<<-]>>>>[<<<<+>>>>-]<-[>>.>.<<<[-]]<<[>>+>+<<<-]>>>[<<<+>>>-]<<[<+>-]>[<+>-]<<<-]", chr(1)), "1");
