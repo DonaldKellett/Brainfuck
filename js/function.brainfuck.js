@@ -24,7 +24,7 @@ function brainfuck(code, input = "") {
       break;
       case ",":
       // Read one character of input into the current cell
-      array[cellIndex] = input[inputIndex++].charCodeAt();
+      array[cellIndex] = (input[inputIndex++] ? input[inputIndex - 1] : String.fromCharCode(0)).charCodeAt();
       break;
       case "+":
       // Increment the value at the current cell by 1.  If value exceeds 255 then loop back to 0

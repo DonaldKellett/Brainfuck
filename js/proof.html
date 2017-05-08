@@ -18,6 +18,12 @@
 
       // Should log string "Hello World!" to the console
       console.log(brainfuck("++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+."));
+      // Should log "Codewars"
+      console.log(brainfuck(",[.,]", "Codewars"));
+      // Should log "@donaldsebleung"
+      console.log(brainfuck(",[.,]", "@donaldsebleung"));
+      // Should log "brainfuck"
+      console.log(brainfuck(",[.,]", "brainfuck"));
       // Should log number 72 to the console (8 * 9)
       console.log(brainfuck(",>,<[>[->+>+<<]>>[-<<+>>]<<<-]>>.", String.fromCharCode(8, 9)).charCodeAt());
       // Should log 15 to the console (5 * 3)
