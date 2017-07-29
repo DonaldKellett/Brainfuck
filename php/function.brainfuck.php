@@ -7,78 +7,59 @@
 */
 
 function brainfuck(string $code, string $input = ""): string {
-  // Sanitize BF code and store as program
-  $program = preg_replace('/[^<>+\-.,\[\]]/', "", $code);
-  // Initialize 30,000 cells initially set to 0
-  $array = array_fill(0, 3e4, 0);
-  // Start at cell #0
-  $cell_index = 0;
-  // Initially read from the first character of the input if "," used
-  $input_index = 0;
-  // Initial output is empty
-  $output = "";
-  // Loop through each character of the BF program
-  for ($i = 0; $i < strlen($program); $i++) {
-    switch ($program[$i]) {
-      case ".":
-      // Print the ASCII value at the current cell
-      if ($array[$cell_index] !== 0) $output .= chr($array[$cell_index]);
-      break;
-      case ",":
-      // Read 1 character from the input and store it in the current cell
-      $array[$cell_index] = ord($input[$input_index++]);
-      break;
-      case "+":
-      // Increase the value of the current cell by 1.  If value exceeds 255 then loop back to 0
-      $array[$cell_index]++;
-      if ($array[$cell_index] > 255) $array[$cell_index] -= 256;
-      break;
-      case "-":
-      // Decrease the value of the current cell by 1.  If value is below 0 then loop back to 255
-      $array[$cell_index]--;
-      if ($array[$cell_index] < 0) $array[$cell_index] += 256;
-      break;
-      case ">":
-      // Move to the next cell
-      $cell_index++;
-      break;
-      case "<":
-      // Move to the previous cell
-      $cell_index--;
-      break;
-      case "[":
-      if ($array[$cell_index] === 0) {
-        // Unmatched opening bracket found.  Jump forwards in the BF program until matching closing bracket found
-        $unmatched = 1;
-        while ($unmatched > 0) {
-          // Jump to next character in BF program
-          $i++;
-          // If next character is opening bracket then there is one more unmatched
-          if ($program[$i] === "[") $unmatched++;
-          // If next character is closing bracket then there is one less unmatched
-          if ($program[$i] === "]") $unmatched--;
-          // Else continue this process until matching closing bracket found
-        }
+  // Bracket validation - throw ParseError if unmatched brackets detected
+  $brackets_only = preg_replace('/[^\[\]]/', '', $code);
+  while (preg_match('/\[\]/', $brackets_only)) $brackets_only = preg_replace('/\[\]/', '', $brackets_only);
+  if (!empty($brackets_only)) throw new ParseError('Unmatched brackets were detected in your Brainfuck program!');
+  // Remove all non-command characters from the program
+  $code = preg_replace('/[^+\-.,<>\[\]]/', '', $code);
+  // Construct jump map to precompute jumps
+  $jump_map = [];
+  for ($i = 0; $i < strlen($code); $i++) {
+    if ($code[$i] === '[') {
+      $unmatched = 1;
+      $temp = 0;
+      while ($unmatched > 0) {
+        $temp++;
+        if ($code[$i + $temp] === '[') $unmatched++;
+        elseif ($code[$i + $temp] === ']') $unmatched--;
       }
+      $jump_map[$i] = $i + $temp;
+    }
+  }
+  // Now the interpreting starts :D
+  $output = '';
+  $tape = array_fill(0, 3e4, 0);
+  $pointer = 0;
+  $j = 0;
+  for ($i = 0; $i < strlen($code); $i++) {
+    switch ($code[$i]) {
+      case '.':
+      $output .= chr($tape[$pointer]);
       break;
-      case "]":
-      if ($array[$cell_index] !== 0) {
-        // Unmatched closing bracket found.  Read backwards in the BF program until matching opening bracket found
-        $unmatched = 1;
-        while ($unmatched > 0) {
-          // Jump backwards 1 character in the BF program
-          $i--;
-          // If previous character is opening bracket then one less unmatched
-          if ($program[$i] === "[") $unmatched--;
-          // If previous character is closing bracket then one more unmatched
-          if ($program[$i] === "]") $unmatched++;
-          // Else continue process until matching opening bracket found
-        }
-      }
+      case ',':
+      $tape[$pointer] = isset($input[$j]) ? ord($input[$j++]) : 0;
+      break;
+      case '>':
+      if (!isset($tape[++$pointer])) throw new OutOfBoundsException('Your memory pointer went too far to the right (rightmost cell of memory tape: cell #29999)!');
+      break;
+      case '<':
+      if (!isset($tape[--$pointer])) throw new OutOfBoundsException('Your memory pointer moved leftwards beyond the first cell (cell #0)!');
+      break;
+      case '+':
+      $tape[$pointer] = ($tape[$pointer] + 1) % 256;
+      break;
+      case '-':
+      $tape[$pointer] = ($tape[$pointer] + 255) % 256;
+      break;
+      case '[':
+      if ($tape[$pointer] === 0) $i = $jump_map[$i];
+      break;
+      case ']':
+      if ($tape[$pointer] !== 0) $i = array_search($i, $jump_map);
       break;
     }
   }
-  // Return final output
   return $output;
 }
 

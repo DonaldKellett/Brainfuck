@@ -79,7 +79,7 @@ Brainfuck interpreters in each scripting language is placed in a folder of its o
 
 #### The Interpreter
 
-**NOTE: The interpreter in PHP currently passes all output assertions but fails on performance as it uses a dumb implementation with no optimizations whatsoever.**
+*Requires PHP 7 or later*
 
 ```php
 string brainfuck(string $code[, string $input = ""])

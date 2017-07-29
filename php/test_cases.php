@@ -83,8 +83,36 @@ $test->describe("The Brainfuck Interpreter", function () use ($test) {
   });
   $test->it('should work for Daniel B Cristofani\'s Universal Turing Machine (UTM) simulation', function () use ($test) {
     $test->assert_max_execution_time(function () use ($test) {
-      $test->assert_equals(brainfuck(file_get_contents('external-files/utm.b'), 'b1b1bbb1c1c11111d'), "1c11111\n");
-    }, 100);
+      for ($i = 0; $i < 10; $i++) $test->assert_equals(brainfuck(file_get_contents('external-files/utm.b'), 'b1b1bbb1c1c11111d'), "1c11111\n");
+    }, 1250);
+  });
+  $test->it('should throw a ParseError if unmatched brackets are detected', function () use ($test) {
+    $test->expect_error('A lone opening square bracket should throw a ParseError', function () {
+      brainfuck('[');
+    });
+    $test->expect_error('A lone closing square bracket should throw a ParseError', function () {
+      brainfuck(']');
+    });
+    $test->expect_error('Inverted brackets should not be counted as properly matched', function () {
+      brainfuck('][');
+    });
+    $test->expect_no_error('A properly matched pair of brackets should cause no problem', function () {
+      brainfuck('[]');
+    });
+    $test->expect_error('The interpreter should detect unmatched brackets in more complicated cases', function () {
+      brainfuck('[]]]]]]]]]][[[[[[[[[[]');
+    });
+  });
+  $test->it('should throw an OutOfBoundsException if the pointer goes out of bounds', function () use ($test) {
+    $test->expect_error('Too far to the left', function () {
+      brainfuck('<');
+    });
+    $test->expect_error('Too far to the right', function () {
+      brainfuck('+[>+]');
+    });
+    $test->expect_error('Too far to the right (2)', function () {
+      brainfuck('-[>-]');
+    });
   });
 });
 
