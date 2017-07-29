@@ -2,7 +2,7 @@
 
 /*
   Brainfuck Interpreter
-  (c) Donald Leung.  All rights reserved.
+  (c) Donald Leung
   MIT License
 */
 
