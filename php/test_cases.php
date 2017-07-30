@@ -114,6 +114,11 @@ $test->describe("The Brainfuck Interpreter", function () use ($test) {
       brainfuck('-[>-]');
     });
   });
+  $test->it('should work for a few bizzare edge cases', function () use ($test) {
+    $test->assert_equals(brainfuck(str_repeat('+', 103496) . '.'), 'H');
+    $test->assert_equals(brainfuck(str_repeat('-', 117944) . '.'), 'H');
+    $test->assert_equals(brainfuck(str_repeat('-', 117944) . str_repeat('.', 93)), str_repeat('H', 93));
+  });
 });
 
 ?>

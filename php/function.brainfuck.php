@@ -13,9 +13,14 @@ function brainfuck(string $code, string $input = ""): string {
   if (!empty($brackets_only)) throw new ParseError('Unmatched brackets were detected in your Brainfuck program!');
   // Remove all non-command characters from the program
   $code = preg_replace('/[^+\-.,<>\[\]]/', '', $code);
-  // Construct jump map to precompute jumps
+  // Group consecutive "+"s, "-"s, "<"s, ">"s and "."s
+  $code = preg_replace_callback('/\+{2,}|\-{2,256}|<{2,}|>{2,}|\.{2,}/', function ($m) {return $m[0][0] . strlen($m[0]);}, $code);
+  $temp = [];
+  preg_match_all('/[+\-<>.]\d*|[,\[\]]/', $code, $temp);
+  $code = $temp[0];
+  // Precompute jumps using jump map
   $jump_map = [];
-  for ($i = 0; $i < strlen($code); $i++) {
+  for ($i = 0; $i < count($code); $i++) {
     if ($code[$i] === '[') {
       $unmatched = 1;
       $temp = 0;
@@ -28,35 +33,46 @@ function brainfuck(string $code, string $input = ""): string {
     }
   }
   // Now the interpreting starts :D
-  $output = '';
   $tape = array_fill(0, 3e4, 0);
   $pointer = 0;
+  $output = '';
   $j = 0;
-  for ($i = 0; $i < strlen($code); $i++) {
-    switch ($code[$i]) {
-      case '.':
-      $output .= chr($tape[$pointer]);
+  for ($i = 0; $i < count($code); $i++) {
+    switch ($code[$i][0]) {
+      case '[':
+      if ($tape[$pointer] == 0) $i = $jump_map[$i];
+      break;
+      case ']':
+      if ($tape[$pointer] != 0) $i = array_search($i, $jump_map);
       break;
       case ',':
       $tape[$pointer] = isset($input[$j]) ? ord($input[$j++]) : 0;
       break;
-      case '>':
-      if (!isset($tape[++$pointer])) throw new OutOfBoundsException('Your memory pointer went too far to the right (rightmost cell of memory tape: cell #29999)!');
-      break;
-      case '<':
-      if (!isset($tape[--$pointer])) throw new OutOfBoundsException('Your memory pointer moved leftwards beyond the first cell (cell #0)!');
-      break;
       case '+':
-      $tape[$pointer] = ($tape[$pointer] + 1) % 256;
+      if (strlen($code[$i]) == 1) $tape[$pointer] = ($tape[$pointer] + 1) % 256;
+      else $tape[$pointer] = ($tape[$pointer] + intval(substr($code[$i], 1))) % 256;
       break;
       case '-':
-      $tape[$pointer] = ($tape[$pointer] + 255) % 256;
+      if (strlen($code[$i]) == 1) $tape[$pointer] = ($tape[$pointer] + 255) % 256;
+      else $tape[$pointer] = ($tape[$pointer] + 256 - intval(substr($code[$i], 1))) % 256;
       break;
-      case '[':
-      if ($tape[$pointer] === 0) $i = $jump_map[$i];
+      case '<':
+      if (strlen($code[$i]) == 1) {
+        if (!isset($tape[--$pointer])) throw new OutOfBoundsException('Your memory pointer moved too far to the left!');
+      } else {
+        if (!isset($tape[$pointer -= intval(substr($code[$i], 1))])) throw new OutOfBoundsException('Your memory pointer moved too far to the left!');
+      }
       break;
-      case ']':
-      if ($tape[$pointer] !== 0) $i = array_search($i, $jump_map);
+      case '>':
+      if (strlen($code[$i]) == 1) {
+        if (!isset($tape[++$pointer])) throw new OutOfBoundsException('Your memory pointer moved too far to the right!');
+      } else {
+        if (!isset($tape[$pointer += intval(substr($code[$i], 1))])) throw new OutOfBoundsException('Your memory pointer moved too far to the right!');
+      }
+      break;
+      case '.':
+      if (strlen($code[$i]) == 1) $output .= chr($tape[$pointer]);
+      else $output .= str_repeat(chr($tape[$pointer]), intval(substr($code[$i], 1)));
       break;
     }
   }
