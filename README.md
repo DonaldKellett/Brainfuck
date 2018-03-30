@@ -4,7 +4,7 @@
 
 *Related Kata (Codewars): [My smallest code interpreter (aka Brainf**k)](http://www.codewars.com/kata/my-smallest-code-interpreter-aka-brainf-star-star-k)*
 
-My implementations of the Brainfuck Interpreter in a number of Turing-complete scripting languages.  Complete with comments throughout the code to explain what is happening in the interpreter.  Guaranteed to work properly for all *valid* Brainfuck programs, with or without comments.  **MIT Licensed**
+My implementations of the Brainfuck Interpreter in a number of Turing-complete programming languages.  Complete with comments throughout the code to explain what is happening in the interpreter.  Guaranteed to work properly for all *valid* Brainfuck programs, with or without comments.  **MIT Licensed**
 
 ## Brainfuck - The Language
 
@@ -69,7 +69,7 @@ Note that there are *countless* ways to print out `"Hello World!"` in a Brainfuc
 
 ## Interpreters
 
-Brainfuck interpreters in each scripting language is placed in a folder of its own complete with test cases / examples to prove that it works.
+Brainfuck interpreters in each programming language is placed in a folder of its own complete with test cases / examples to prove that it works.
 
 ### PHP
 
