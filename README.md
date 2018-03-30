@@ -101,6 +101,73 @@ var stringOutput = brainfuck(code[, input = ""]);
 
 The interpreter accepts 1 required argument and 1 optional argument.  The first (required) argument is the Brainfuck program passed in as a string.  Comments (i.e. characters other than the 8 command characters in Brainfuck) are supported.  The second (optional) argument is the list of bytes of character data passed into the Brainfuck program if the program requires user input (i.e. `,`) **in the form of a string** *not* an array.  For example, if the Brainfuck program contains two `,`s and the `input` string is `"BF"` then `"B"` will be passed in for the first `,` and `"F"` for the next `,`.  When EOF is reached, the interpreter simply stores a value of `0` at the cell under the pointer.  The return value of the interpreter is *always* a string even if only digits are printed out.
 
+### Netwide Assembler (for Mac OS)
+
+- Folder: `nasm-c`
+- File containing interpreter: `brainfuck.asm`
+- Proof of working interpreter (no testing framework employed): `proof.c`
+
+#### The Interpreter
+
+*N.B. The interpreter only works on Mac OS with NASM v2.x.x or later installed.  If you are using a Mac, you can check whether you have the latest version of NASM installed by executing the* `nasm -v` *command in your Terminal.*
+
+```c
+char *brainfuck(const char *code, const char *input);
+```
+
+The interpreter uses a standard implementation with the following implementation details:
+
+- Consists of a memory tape of 30000 8-bit wrapping cells, all initialized to `0` at the start of the BF program to be executed.  The memory tape is non-toroidal
+- EOF is denoted as `byte(0)`, i.e. once the input byte stream `input` is exhausted, the `,` command will enter a value of `0` to the cell under the tape pointer
+- No standard hacks enabled (such as `!` for separating program and input); no special treatment of newline character
+
+To use the interpreter in your C program, simply include the function declaration as shown above before your `main` function (or any other function that may invoke `brainfuck`).  For example:
+
+```c
+/*
+ * example.c
+ * A simple example on how to use the Brainfuck interpreter written in NASM
+ * v2.13.03 for Mac OS
+ */
+
+#include <stdio.h>
+
+char *brainfuck(const char *, const char *);
+
+int main() {
+  printf("%s\n", brainfuck(">>>>--<-<<+[+[<+>--->->->-<<<]>]<<--.<++++++.<<-..<<.<+.>>.>>.<<<.+++.>>.>>-.<<<+.", "")); // > Hello, World!
+  return 0;
+}
+```
+
+This file has been included in the directory `nasm-c` as `example.c` for your reference.  To assemble, compile and run (including the console output):
+
+```
+$ nasm -fmacho64 brainfuck.asm && gcc example.c brainfuck.o && ./a.out
+Hello, World!
+```
+
+#### Proof of Correctness
+
+To test whether the Brainfuck interpreter located at `brainfuck.asm` is behaving as expected, change directory to the `nasm-c` folder and run the following sequence of commands: `nasm -fmacho64 brainfuck.asm && gcc proof.c brainfuck.o && ./a.out`.  If the interpreter is working as expected, you should see the following output (minus any compiler warnings):
+
+```
+$ nasm -fmacho64 brainfuck.asm && gcc proof.c brainfuck.o && ./a.out
+Hello, World!
+Hello World!
+Hello World!
+Netwide Assembler
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+abcdefghijklmnopqrstuvwxyz
+Hello World!
+Hello, World!
+NASM + C = pure awesomeness :)
+H
+8
+1, 1, 2, 3, 5, 8, 13, 21, 34, 55
+```
+
 ## Credits
 
 1. [Learn X in Y minutes (where X = brainfuck)](https://learnxinyminutes.com/docs/brainfuck/)
