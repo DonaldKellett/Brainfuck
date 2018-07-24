@@ -69,8 +69,6 @@ Note that there are *countless* ways to print out `"Hello World!"` in a Brainfuc
 
 ## Interpreters
 
-Brainfuck interpreters in each programming language is placed in a folder of its own complete with test cases / examples to prove that it works.
-
 ### PHP
 
 - Folder: `php`
@@ -167,6 +165,36 @@ H
 8
 1, 1, 2, 3, 5, 8, 13, 21, 34, 55
 ```
+
+### Excel VBA (for Windows Microsoft Excel 2016)
+
+- Folder: `excel-vba`
+- File containing interpreter: `Brainfuck.xlsm`
+
+#### The Interpreter
+
+The spreadsheet itself can be used as a Brainfuck interpreter - just enter the BF program and input stream in the correct cells (B1 and B2 respectively), click "Execute" and the program output will be displayed in the output cell (cell B3).  The text in adjacent cells acting as labels should make it clear which cells correspond to the program, input and output.
+
+Alternatively, a function `Brainfuck(ByVal Program As String, ByVal ProgInput As String) As String` has been defined in the same "file" (?) as the event handler for the "Execute" button (which is named `ExecuteButton`) so you could also use that function independently from the spreadsheet interface provided.  For example, you could invoke the `Brainfuck` function with a Hello World program every time the spreadsheet is opened and display the result through a `MsgBox`, like such:
+
+```vba
+Sub Sheet1_Open() ' or whatever that handler is called, idk :p
+  MsgBox Brainfuck( _
+    "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.", _
+    "" _
+  )
+End Sub
+```
+
+*NOTE: You might have to first copy the function definition of* `Brainfuck` *from the "file" containing the* `ExecuteButton` *event handler to the worksheet open event handler; I'm not sure because I haven't tested it out yet.*
+
+The interpreter used is a standard implementation where the memory tape is exactly `30000` cells long, each cell holds exactly 1 byte (with wrapping behavior), the tape pointer starts at the leftmost cell of the memory tape (and the tape itself does *not* wrap; going out of bounds will likely generate a runtime error) and EOF is denoted as `byte(0)`.  Traditional "hacks" such as `!` separating program from input are *not* supported.
+
+Unlike the BF interpreters featured in the `js`, `php` and `nasm-c` folders, the `Brainfuck` interpreter featured in Excel VBA is not a standalone function - it relies on an externally defined class `VirtualMachine` which simulates the "hardware" a typical Brainfuck program runs on (namely, the memory tape with 30k byte-sized cells initialized to `0` on every run and a tape pointer starting from the leftmost cell).
+
+#### Correctness of Implementation
+
+I didn't provide any test cases in the spreadsheet file for you to verify the correctness of the interpreter; however, I have personally tested it against a few Hello World programs provided at http://esolangs.org/wiki/Brainfuck, a CAT program (assuming EOF is `byte(0)`) with program inputs of varying size, a [Bubblesort program](http://www.hevanet.com/cristofd/brainfuck/bsort.b) with program input "supercalifragilisticexpialidocious" and a [UTM simulation](http://www.hevanet.com/cristofd/brainfuck/utm.b) with the "quick and complete test case" provided in the comments of that program, all of which my implementation produced the expected results.  Feel free to notify me if you stumble across a program that triggers a bug in my interpreter :wink:
 
 ## Credits
 
