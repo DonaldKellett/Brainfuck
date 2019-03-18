@@ -196,6 +196,36 @@ Unlike the BF interpreters featured in the `js`, `php` and `nasm-c` folders, the
 
 I didn't provide any test cases in the spreadsheet file for you to verify the correctness of the interpreter; however, I have personally tested it against a few Hello World programs provided at http://esolangs.org/wiki/Brainfuck, a CAT program (assuming EOF is `byte(0)`) with program inputs of varying size, a [Bubblesort program](http://www.hevanet.com/cristofd/brainfuck/bsort.b) with program input "supercalifragilisticexpialidocious" and a [UTM simulation](http://www.hevanet.com/cristofd/brainfuck/utm.b) with the "quick and complete test case" provided in the comments of that program, all of which my implementation produced the expected results.  Feel free to notify me if you stumble across a program that triggers a bug in my interpreter :wink:
 
+### MIPS
+
+- Folder: `mips`
+- File containing interpreter: `brainfuck.asm`
+- File containing test cases: `brainfuck.asm`
+
+#### The Interpreter
+
+The Brainfuck interpreter in MIPS is implemented in the file `brainfuck.asm` as a procedure starting with the label `brainfuck`.  The usage of the `brainfuck` procedure is as follows:
+
+- Register `$a0` should point to the beginning of the Brainfuck program to be interpreted
+- Register `$a1` should point to the beginning of the input stream of bytes passed to the Brainfuck program being interpreted
+- Register `$a2` should point to a writable character buffer which will be used to store the output of the Brainfuck program as a NUL-terminated string (C-string).
+
+*N.B. Both input parameters `$a0-a1` of the `brainfuck` procedure should be NUL-terminated as in a C-string.*
+
+The `brainfuck` procedure does *not* return a value in registers `$v0-v1`.  As such, it is equivalent to `void brainfuck(const char *code, const char *input, char *output)` in C.
+
+The calling convention followed by the `brainfuck` procedure is the standard MIPS convention as outlined in [this gist](https://gist.github.com/internetsadboy/28d6862db63ecbbb2324).
+
+The interpreter is a standard Brainfuck interpreter with a memory tape of 30k wrapping byte-sized cells all initialized to 0 with a memory pointer starting from the leftmost cell.  Common interpreter extensions such as `!` for separating program from input or `@` for debugging are *not* supported.  In case an input byte is requested by the `,` command where the input stream is exhausted, the interpreter is guaranteed to read in a `0` byte to the cell under the memory pointer **once**.  Subsequent attempts to read from the exhausted input stream leads to *undefined behavior*.
+
+#### Correctness of the Interpreter
+
+The file `brainfuck.asm` containing the interpreter also contains a set of test cases (CAT program, 3 Hello World programs, Universal Turing Machine) verifying its correctness.  The test cases should be self-explanatory (especially those involving Hello World programs) but the first test case should output `CAT program` and the final one `1c11111`.
+
+#### Compatibility
+
+The Brainfuck interpreter in MIPS has been tested under the [MARS MIPS Simulator](http://courses.missouristate.edu/KenVollmar/mars/) and therefore guaranteed to work in MARS; however, since no MARS-specific extensions were used in the program and a limited number of pseudo-instructions were used, it should work in other emulators such as SPIM as well.
+
 ## Credits
 
 1. [Learn X in Y minutes (where X = brainfuck)](https://learnxinyminutes.com/docs/brainfuck/)
