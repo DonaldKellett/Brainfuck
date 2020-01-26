@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/Brainfuck-Interpreter/Lobby](https://badges.gitter.im/Brainfuck-Interpreter/Lobby.svg)](https://gitter.im/Brainfuck-Interpreter/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-My implementations of the Brainfuck interpreter in a number of general-purpose programming languages, extensively tested using a wide range of different Brainfuck programs.
+My implementations of the Brainfuck interpreter in a variety of programming languages, extensively tested using a wide range of different Brainfuck programs.
 
 ## What is Brainfuck?
 
