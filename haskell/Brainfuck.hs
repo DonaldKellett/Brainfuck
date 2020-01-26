@@ -60,7 +60,7 @@ execProgWithState :: StateT (Program, String, IntMap.IntMap Int, Int, String) (E
 execProgWithState = do
   (prog, input, tape, ptr, output) <- get
   case prog of
-    [] -> return output
+    [] -> return (reverse output)
     PtrInc : prog' -> do
       put (prog', input, tape, ptr + 1, output)
       execProgWithState
@@ -99,14 +99,9 @@ execProgWithState = do
           execProgWithState
       Nothing -> lift (Left "Runtime error: Tape pointer out of bounds")
 
-execProg' :: Program -> String -> Either String String
-execProg' prog input = evalStateT execProgWithState (prog, input, foldl (\tape ptr ->
-  IntMap.insert ptr 0 tape) IntMap.empty [0..29999], 0, "")
-
 execProg :: Program -> String -> Either String String
-execProg prog input = do
-  revOut <- execProg' prog input
-  return (reverse revOut)
+execProg prog input = evalStateT execProgWithState (prog, input, foldl (\tape ptr ->
+  IntMap.insert ptr 0 tape) IntMap.empty [0..29999], 0, "")
 
 brainfuck :: String -> String -> Either String String
 brainfuck code input = do
@@ -114,4 +109,5 @@ brainfuck code input = do
   execProg prog input
 
 brainfuck' :: String -> Either String String
-brainfuck' code = brainfuck code ""
+brainfuck' code = brainfuck code (error ("brainfuck': The program should not attempt to read the input stream. " ++
+  "If the program requires / may require to access the input stream then please use `brainfuck` instead."))
