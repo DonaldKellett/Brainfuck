@@ -109,5 +109,4 @@ brainfuck code input = do
   execProg prog input
 
 brainfuck' :: String -> Either String String
-brainfuck' code = brainfuck code (error ("brainfuck': The program should not attempt to read the input stream. " ++
-  "If the program requires / may require to access the input stream then please use `brainfuck` instead."))
+brainfuck' code = brainfuck code ""
